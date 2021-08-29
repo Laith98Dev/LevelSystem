@@ -1,0 +1,16 @@
+name: LevelSystem
+api: [3.0.0]
+main: Laith98Dev\LevelSystem\Main
+author: Laith98Dev
+website: https://github.com/Laith98Dev
+version: 1.0.0
+
+commands:
+  ls:
+    description: LevelSystem Command
+    permission: ls.cmd.staff
+    
+permissions:
+  ls.cmd.staff:
+    description: Allow player to use LevelSystem command
+    default: op
