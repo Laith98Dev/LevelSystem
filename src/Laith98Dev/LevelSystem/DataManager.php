@@ -73,8 +73,8 @@ class DataManager
 				"nextLevelXP" => 0
 			]);
 			
-			$add = (100 * $cfg->get("Level") * 2) / 2;
-			$nextLevelXP = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 2);
+			$add = (100 * $cfg->get("Level") * 5) / 2;
+			$nextLevelXP = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 5);
 			
 			$cfg->set("addXP", $add);
 			$cfg->set("nextLevelXP", $nextLevelXP);
@@ -95,11 +95,6 @@ class DataManager
 			}
 		}
 		return null;
-	}
-	
-	public function getMode(){
-		$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-		return $cfg->getAll()["Mode"];
 	}
 	
 	public function getAddXpCount($player): ?int{
@@ -175,11 +170,13 @@ class DataManager
 	}
 	
 	public function addXP($player, int $add): bool{
+		//var_dump("add xp function <br>");
 		if(($data = $this->getPlayerData($player)) !== null){
+			//var_dump("data not null");
 			$xp = $data->get("XP");
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($xp >= $cfg->get("MaxLevel"))
+			if($data->get("Level") >= $cfg->get("MaxLevel"))
 				return false;
 			
 			$new = ($xp + $add);
@@ -221,19 +218,8 @@ class DataManager
 			if($newLevel >= $cfg->get("MaxLevel"))
 				return false;
 			
-			$add = (100 * $newLevel * 2) / 2;
-			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 2);
-			$mode = $this->getMode();
-			if($mode == "easy"){
-				$add = (100 * $newLevel * 10) / 2;
-				$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 10);
-			} elseif($mode == "medium"){
-				$add = (100 * $newLevel * 5) / 2;
-				$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
-			} elseif($mode == "hard"){
-				$add = (100 * $newLevel * 2) / 2;
-				$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 2);
-			}
+			$add = (100 * $newLevel * 5) / 2;
+			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
 			
 			if($player instanceof Player){
 				$player->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
