@@ -221,6 +221,8 @@ class DataManager
 			if($newLevel >= $cfg->get("MaxLevel"))
 				return false;
 			
+			$add = (100 * $newLevel * 2) / 2;
+			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 2);
 			$mode = $this->getMode();
 			if($mode == "easy"){
 				$add = (100 * $newLevel * 10) / 2;
