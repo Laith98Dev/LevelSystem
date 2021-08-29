@@ -73,8 +73,7 @@ class Main extends PluginBase
 				"add-xp-by-chat" => true,
 				"kill-with-death-screen" => true,
 				"edit-chat-format" => true,
-				"MaxLevel" => 100,
-				"Mode" => "medium"
+				"MaxLevel" => 100
 			]));
 		}
 		
@@ -199,7 +198,6 @@ class Main extends PluginBase
 			$g = $cfg->get("edit-chat-format");
 			$h = $cfg->get("chatFormat");
 			$i = $cfg->get("MaxLevel");
-			$j = $cfg->get("Mode");
 			
 			if($data[0] !== $a){
 				$cfg->set("plugin-enable", $data[0]);
@@ -243,12 +241,6 @@ class Main extends PluginBase
 			
 			if($data[8] !== $i){
 				$cfg->set("MaxLevel", $data[8]);
-				$cfg->save();
-			}
-			
-			$modes = ["easy", "medium", "hard"];
-			if($modes[$data[9]] !== $j){
-				$cfg->set("Mode", $modes[$data[9]]);
 				$cfg->save();
 			}
 			
@@ -304,10 +296,6 @@ class Main extends PluginBase
 		$form->addInput("chat Format: ", "", $cfg->get("chatFormat", "&c[&e{lvl}&c] &r{name} &7> &r{msg}"));
 		
 		$form->addInput("Max Level: ", "", $cfg->get("MaxLevel", 100));
-		
-		$d = ["easy" => 0, "medium" => 1, "hard" => 2];
-		$def = $d[$cfg->get("Mode")];
-		$form->addDropdown("Mode: ", ["easy", "medium", "hard"], $cfg->get("Mode"));
 		
 		$form->sendToPlayer($player);
 		return $form;
