@@ -1,0 +1,11 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Laith98Dev/LevelSystem
+build-by-default: true
+branches:
+- main
+projects:
+  LevelSystem:
+    path: ""
+    libs:
+            - src: jojoe77777/FormAPI/libFormAPI
+              version: ^1.3
+...
