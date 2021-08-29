@@ -137,7 +137,7 @@ class EventListener implements Listener
 							if($entity->getHealth() <= $event->getFinalDamage()){
 								var_dump("Finaly damage hi \n");
 								if(($c = mt_rand(0, 300)) < 150 && $c > 50 && mt_rand(0, 50) < 20){// random
-									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
+									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($damager))){
 										$damager->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($damager) . " XP");
 									}
 								}
