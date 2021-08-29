@@ -80,7 +80,9 @@ class EventListener implements Listener
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-build") === true){
-					if(($c = mt_rand(0, 200)) < 150 && $c > 50 && mt_rand(0, 50) < 20){// random
+					$mode = $this->getDataManager()->getMode();
+					$rateMode = $mode == "medium" ? 200 : ($mode == "easy" ? 160 : ($mode == "hard" ? 300 : 200));
+					if(($c = mt_rand(0, $rateMode)) < 150 && $c > 50 && mt_rand(0, 50) > 20){// random
 						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 						}
@@ -97,7 +99,9 @@ class EventListener implements Listener
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") && $cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true){
-					if(($c = mt_rand(0, 200)) < 150 && $c > 50 && mt_rand(0, 50) < 20){// random
+					$mode = $this->getDataManager()->getMode();
+					$rateMode = $mode == "medium" ? 200 : ($mode == "easy" ? 160 : ($mode == "hard" ? 300 : 200));
+					if(($c = mt_rand(0, $rateMode)) < 150 && $c > 50 && mt_rand(0, 50) > 20){// random
 						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 						}
@@ -114,8 +118,10 @@ class EventListener implements Listener
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-kill") === true){
 					if($cfg->get("kill-with-death-screen") === true){
-						var_dump("death here hi \n");
-						if(($c = mt_rand(0, 200)) < 150 && $c > 50 && mt_rand(0, 50) < 20){// random
+						//var_dump("death here hi \n");
+						$mode = $this->getDataManager()->getMode();
+						$rateMode = $mode == "medium" ? 200 : ($mode == "easy" ? 160 : ($mode == "hard" ? 300 : 200));
+						if(($c = mt_rand(0, $rateMode)) < 150 && $c > 50 && mt_rand(0, 50) > 20){// random
 							if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 								$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 							}
@@ -135,8 +141,10 @@ class EventListener implements Listener
 					if($cfg->get("add-xp-by-kill") === true){
 						if($cfg->get("kill-with-death-screen") === false){
 							if($entity->getHealth() <= $event->getFinalDamage()){
-								var_dump("Finaly damage hi \n");
-								if(($c = mt_rand(0, 200)) < 150 && $c > 50 && mt_rand(0, 50) < 20){// random
+								//var_dump("Finaly damage hi \n");
+								$mode = $this->getDataManager()->getMode();
+								$rateMode = $mode == "medium" ? 200 : ($mode == "easy" ? 160 : ($mode == "hard" ? 300 : 200));
+								if(($c = mt_rand(0, $rateMode)) < 150 && $c > 50 && mt_rand(0, 50) > 20){// random
 									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($damager))){
 										$damager->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($damager) . " XP");
 									}
@@ -156,7 +164,9 @@ class EventListener implements Listener
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-chat") === true){
-					if(($c = mt_rand(0, 200)) < 150 && $c > 50 && mt_rand(0, 50) < 20){// random
+					$mode = $this->getDataManager()->getMode();
+					$rateMode = $mode == "medium" ? 200 : ($mode == "easy" ? 160 : ($mode == "hard" ? 300 : 200));
+					if(($c = mt_rand(0, $rateMode)) < 150 && $c > 50 && mt_rand(0, 50) > 20){// random
 						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 						}
