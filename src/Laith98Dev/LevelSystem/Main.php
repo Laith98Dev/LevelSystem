@@ -93,6 +93,8 @@ class Main extends PluginBase
 			if($sender instanceof Player){
 				if($cmd->testPermission($sender)){
 					$this->OpenMainForm($sender);
+				} else {
+					$this->OpenPlayerForm($sender, $sender);
 				}
 			} else {
 				$sender->sendMessage("run command in-game only!");
@@ -168,13 +170,15 @@ class Main extends PluginBase
 			
 			switch ($data){
 				case 0:
-					$this->OpenPlayersForm($player);
+					if($player->hasPermission("ls.cmd.staff")){
+						$this->OpenPlayersForm($player);
+					}
 				break;
 			}
 		});
 		$form->setTitle($player_ . " info");
 		$form->setContent("\n - " . TF::YELLOW . "Level: " . TF::RESET . $this->getDataManager()->getLevel($player_) . TF::GREEN . " (" . $this->getDataManager()->getXP($player_) . TF::GRAY . "/" . TF::RESET . $this->getDataManager()->getNextLevelXP($player_) . TF::GREEN . ")");
-		$form->addButton("Back");
+		$form->addButton($player->hasPermission("ls.cmd.staff") ? "Back" : "Exit");
 		$form->sendToPlayer($player);
 		return $form;
 	}
