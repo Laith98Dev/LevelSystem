@@ -97,6 +97,11 @@ class DataManager
 		return null;
 	}
 	
+	public function getMode(){
+		$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
+		return $cfg->getAll()["Mode"];
+	}
+	
 	public function getAddXpCount($player): ?int{
 		if(($data = $this->getPlayerData($player)) !== null){
 			return $data->getAll()["addXP"];
@@ -216,8 +221,17 @@ class DataManager
 			if($newLevel >= $cfg->get("MaxLevel"))
 				return false;
 			
-			$add = (100 * $newLevel * 2) / 2;
-			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 2);
+			$mode = $this->getMode();
+			if($mode == "easy"){
+				$add = (100 * $newLevel * 10) / 2;
+				$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 10);
+			} elseif($mode == "medium"){
+				$add = (100 * $newLevel * 5) / 2;
+				$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
+			} elseif($mode == "hard"){
+				$add = (100 * $newLevel * 2) / 2;
+				$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 2);
+			}
 			
 			if($player instanceof Player){
 				$player->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
@@ -226,8 +240,8 @@ class DataManager
 			} else {
 				$p = $this->getPlugin()->getServer()->getPlayer($player);
 				if($p !== null){
-					$lvl = $this->getLevel($player);
-					$player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
+					// $lvl = $this->getLevel($player);
+					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
 					$p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
 				}
 			}
