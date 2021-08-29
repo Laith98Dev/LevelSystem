@@ -91,10 +91,10 @@ class Main extends PluginBase
 	public function onCommand(CommandSender $sender, Command $cmd, string $cmdLabel, array $args): bool{
 		if($cmd->getName() == "ls"){// LS
 			if($sender instanceof Player){
-				if($cmd->testPermission($sender)){
+				if($sender->hasPermission("ls.cmd.staff")){
 					$this->OpenMainForm($sender);
 				} else {
-					$this->OpenPlayerForm($sender, $sender);
+					$this->OpenPlayerForm($sender, $sender->getName());
 				}
 			} else {
 				$sender->sendMessage("run command in-game only!");
