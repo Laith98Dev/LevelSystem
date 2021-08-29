@@ -305,6 +305,8 @@ class Main extends PluginBase
 		
 		$form->addInput("Max Level: ", "", $cfg->get("MaxLevel", 100));
 		
+		$d = ["easy" => 0, "medium" => 1, "hard" => 2];
+		$def = $d[$cfg->get("Mode")];
 		$form->addDropdown("Mode: ", ["easy", "medium", "hard"], $cfg->get("Mode"));
 		
 		$form->sendToPlayer($player);
