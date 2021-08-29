@@ -8,7 +8,6 @@ version: 1.0.0
 commands:
   ls:
     description: LevelSystem Command
-    permission: ls.cmd.staff
     
 permissions:
   ls.cmd.staff:
