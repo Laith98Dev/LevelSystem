@@ -93,7 +93,7 @@ class EventListener implements Listener
 	public function onBreak(BlockBreakEvent $event){
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
-		if($player instanceof Player){
+		if($player instanceof Player && !$event->isCancelled()){// check if event not cancelled
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") && $cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true){
@@ -114,7 +114,7 @@ class EventListener implements Listener
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-kill") === true){
 					if($cfg->get("kill-with-death-screen") === true){
-						var_dump("death here hi \n");
+						//var_dump("death here hi \n");
 						if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1){// random
 							if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 								$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
@@ -135,7 +135,7 @@ class EventListener implements Listener
 					if($cfg->get("add-xp-by-kill") === true){
 						if($cfg->get("kill-with-death-screen") === false){
 							if($entity->getHealth() <= $event->getFinalDamage()){
-								var_dump("Finaly damage hi \n");
+								//var_dump("Finaly damage hi \n");
 								if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1){// random
 									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($damager))){
 										$damager->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($damager) . " XP");
