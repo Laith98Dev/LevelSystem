@@ -80,7 +80,7 @@ class EventListener implements Listener
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-build") === true){
-					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1){// random
+					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 						}
@@ -115,7 +115,7 @@ class EventListener implements Listener
 				if($cfg->get("add-xp-by-kill") === true){
 					if($cfg->get("kill-with-death-screen") === true){
 						//var_dump("death here hi \n");
-						if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1){// random
+						if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 							if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 								$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 							}
@@ -136,7 +136,7 @@ class EventListener implements Listener
 						if($cfg->get("kill-with-death-screen") === false){
 							if($entity->getHealth() <= $event->getFinalDamage()){
 								//var_dump("Finaly damage hi \n");
-								if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1){// random
+								if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($damager))){
 										$damager->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($damager) . " XP");
 									}
@@ -156,7 +156,7 @@ class EventListener implements Listener
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-chat") === true){
-					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1){// random
+					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
 						}
