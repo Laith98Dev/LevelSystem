@@ -237,6 +237,7 @@ class DataManager
 			$data->set("Level", $newLevel);
 			$data->set("addXP", $add);
 			$data->set("nextLevelXP", $newNextLevel);
+			$data->set("XP", 0);
 			$data->save();
 			return true;
 		}
