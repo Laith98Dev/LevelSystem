@@ -215,7 +215,7 @@ class DataManager
 		if(($data = $this->getPlayerData($player)) !== null){
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($newLevel >= $cfg->get("MaxLevel"))
+			if($newLevel > $cfg->get("MaxLevel"))
 				return false;
 			
 			$add = (100 * $newLevel * 5) / 2;
