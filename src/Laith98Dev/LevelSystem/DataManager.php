@@ -218,8 +218,10 @@ class DataManager
 			if($newLevel > $cfg->get("MaxLevel"))
 				return false;
 			
-			$add = (100 * $newLevel * 5) / 2;
-			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
+			//$add = (100 * $newLevel * 5) / 2;
+			$add = (100 * $newLevel * 4) / 2;
+			//$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
+			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 4);
 			
 			if($player instanceof Player){
 				$player->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
