@@ -40,6 +40,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 
 use pocketmine\Player;
+use pocketmine\block\Block;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
@@ -73,9 +74,13 @@ class Main extends PluginBase
 				"add-xp-by-chat" => true,
 				"kill-with-death-screen" => true,
 				"edit-chat-format" => true,
+				"blocks-list" => [Block::STONE, Block::DIRT],// List of blocks that give XP
+				"new-level-message" => "&eCongratulations, you have reached level {newLevel}",
 				"MaxLevel" => 100
 			]));
 		}
+		
+		$this->fixConfig();
 		
 		$this->dataManager = new DataManager($this);
 		
@@ -86,6 +91,32 @@ class Main extends PluginBase
 	
 	public function getDataManager(){
 		return $this->dataManager;
+	}
+	
+	public function fixConfig(){
+		$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
+		$all = $cfg->getAll();
+		$index = [
+			"plugin-enable" => true,
+			"chatFormat" => "&c[&e{lvl}&c] &r{name} &7> &r{msg}",
+			"add-xp-by-build" => true,
+			"add-xp-by-destroy" => true,
+			"add-xp-by-kill" => true,
+			"add-xp-by-chat" => true,
+			"kill-with-death-screen" => true,
+			"edit-chat-format" => true,
+			"blocks-list" => [Block::STONE, Block::DIRT],// List of blocks that give XP
+			"new-level-message" => "&eCongratulations, you have reached level {newLevel}",
+			"MaxLevel" => 100
+		];
+		
+		foreach ($index as $key => $value){
+			if(!isset($all[$key])){
+				$cfg->set($key, $value);
+			}
+		}
+		
+		$cfg->save();
 	}
 	
 	public function onCommand(CommandSender $sender, Command $cmd, string $cmdLabel, array $args): bool{
@@ -197,7 +228,8 @@ class Main extends PluginBase
 			$f = $cfg->get("kill-with-death-screen");
 			$g = $cfg->get("edit-chat-format");
 			$h = $cfg->get("chatFormat");
-			$i = $cfg->get("MaxLevel");
+			$i = $cfg->get("new-level-message");
+			$j = $cfg->get("MaxLevel");
 			
 			if($data[0] !== $a){
 				$cfg->set("plugin-enable", $data[0]);
@@ -240,7 +272,12 @@ class Main extends PluginBase
 			}
 			
 			if($data[8] !== $i){
-				$cfg->set("MaxLevel", $data[8]);
+				$cfg->set("new-level-message", $data[8]);
+				$cfg->save();
+			}
+			
+			if($data[9] !== $j){
+				$cfg->set("MaxLevel", $data[9]);
 				$cfg->save();
 			}
 			
@@ -294,6 +331,8 @@ class Main extends PluginBase
 		}
 		
 		$form->addInput("chat Format: ", "", $cfg->get("chatFormat", "&c[&e{lvl}&c] &r{name} &7> &r{msg}"));
+		
+		$form->addInput("New Level Message: ", "", $cfg->get("new-level-message", "&eCongratulations, you have reached level {newLevel}"));
 		
 		$form->addInput("Max Level: ", "", $cfg->get("MaxLevel", 100));
 		
