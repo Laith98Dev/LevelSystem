@@ -232,7 +232,8 @@ class DataManager
 				if($p !== null){
 					// $lvl = $this->getLevel($player);
 					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
-					$p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
+					//$p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
+					$p->sendMessage(str_replace(["&", "{newLevel}", "{nextLevelXP}"], [TF::ESCAPE, $newLevel, $nextLevelXP], $cfg->get("new-level-message")));
 				}
 			}
 			
