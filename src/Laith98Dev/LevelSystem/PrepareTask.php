@@ -36,6 +36,7 @@ namespace Laith98Dev\LevelSystem;
  */
 
 use pocketmine\scheduler\Task;
+use pocketmine\utils\Config;
 use pocketmine\Player;
 use pocketmine\block\Block;
 
@@ -69,7 +70,7 @@ class PrepareTask extends Task {
 			if(($level = $block->getLevel()) !== null){
 			if($level->getBlock($block->asVector3())->getId() == $block->getId()){
 				if($player instanceof Player){
-					var_dump("Event Work\n");
+					//var_dump("Event Work\n");
 					$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
 					if($cfg->get("plugin-enable") === true){
 						if($cfg->get("add-xp-by-build") === true){
@@ -89,7 +90,7 @@ class PrepareTask extends Task {
 			if(($level = $block->getLevel()) !== null){
 				if($level->getBlock($block->asVector3())->getId() !== $block->getId()){
 					if($player instanceof Player){
-						var_dump("Event Work\n");
+						//var_dump("Event Work\n");
 						$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
 						if($cfg->get("plugin-enable") && $cfg->get("plugin-enable") === true){
 							if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true && in_array($block->getId(), $cfg->get("blocks-list", []))){
