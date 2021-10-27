@@ -1,6 +1,6 @@
 <?php
 
-namespace Laith98Dev\FFA;
+namespace Laith98Dev\LevelSystem;
 
 /*  
  *  A plugin for PocketMine-MP.
