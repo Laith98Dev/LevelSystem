@@ -219,8 +219,11 @@ class DataManager
 				return false;
 			
 			//$add = (100 * $newLevel * 5) / 2;
-			$add = (100 * $newLevel * 4) / 2;
+			//$add = (100 * $newLevel * 4) / 2;
 			//$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
+			//$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 4);
+			
+			$add = (50 * $newLevel / 2);
 			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 4);
 			
 			if($player instanceof Player){
@@ -232,7 +235,7 @@ class DataManager
 				if($p !== null){
 					// $lvl = $this->getLevel($player);
 					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
-					//$p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
+					// $p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
 					$p->sendMessage(str_replace(["&", "{newLevel}", "{nextLevelXP}"], [TF::ESCAPE, $newLevel, $newNextLevel], $cfg->get("new-level-message")));
 				}
 			}
