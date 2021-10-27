@@ -77,7 +77,7 @@ class DataManager
 			// $nextLevelXP = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 5);
 			
 			$add = (50 * $cfg->get("Level") / 2);
-			$newNextLevel = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 4);
+			$nextLevelXP = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 4);
 			
 			$cfg->set("addXP", $add);
 			$cfg->set("nextLevelXP", $nextLevelXP);
