@@ -39,7 +39,7 @@ use pocketmine\scheduler\Task;
 use pocketmine\Player;
 use pocketmine\block\Block;
 
-class PrepareBlockTask extends Task {
+class PrepareTask extends Task {
 	
 	/** @var Main */
 	private $plugin;
