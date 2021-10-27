@@ -73,9 +73,11 @@ class EventListener implements Listener
 		}
 	}
 	
-	public function onPlace(BlockPlaceEvent $event){
+	public function onPlace(BlockPlaceEvent $event): void{
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
+		if($event->isCancelled())
+			return;
 		if($player instanceof Player){
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){
@@ -90,13 +92,15 @@ class EventListener implements Listener
 		}
 	}
 	
-	public function onBreak(BlockBreakEvent $event){
+	public function onBreak(BlockBreakEvent $event): void{
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
-		if($player instanceof Player && !$event->isCancelled()){// check if event not cancelled
+		if($event->isCancelled())
+			return;
+		if($player instanceof Player){
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") && $cfg->get("plugin-enable") === true){
-				if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true){
+				if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true && in_array($block->getId(), $cfg->get("blocks-list", []))){
 					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
