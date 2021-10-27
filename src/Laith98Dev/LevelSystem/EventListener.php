@@ -79,7 +79,7 @@ class EventListener implements Listener
 		if($event->isCancelled())
 			return;
 		
-		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareBlockTask($this->plugin, $player, $block, 1), 1 * 20);
+		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 1), 1 * 20);
 	}
 	
 	public function onBreak(BlockBreakEvent $event): void{
@@ -88,7 +88,7 @@ class EventListener implements Listener
 		if($event->isCancelled())
 			return;
 		
-		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareBlockTask($this->plugin, $player, $block, 2), 1 * 20);
+		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 2), 1 * 20);
 	}
 	
 	public function onDeath(PlayerDeathEvent $event){
