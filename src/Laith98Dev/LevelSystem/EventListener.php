@@ -152,7 +152,7 @@ class EventListener implements Listener
 				if(!$event->isCancelled() && $cfg->get("edit-chat-format") === true){
 					if($this->getPlugin()->pureChat !== null){
 												
-						$levelName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getLevel()->getName() : null;
+						$levelName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getName() : null;
 						$chatFormat = $this->getPlugin()->pureChat->getChatFormat($player, $message, $levelName);
 						$chatFormat = str_replace("{lvl}", $lvl, $chatFormat);
 						//var_dump("Befor: " . $event->getFormat() . "\n");
