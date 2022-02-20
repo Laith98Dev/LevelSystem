@@ -38,7 +38,7 @@ namespace Laith98Dev\LevelSystem;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\block\Block;
 
 class PrepareTask extends Task {
@@ -62,14 +62,14 @@ class PrepareTask extends Task {
 		$this->type = $type;
 	}
 	
-	public function onRun(int $tick){
+	public function onRun(): void{
 		$player = $this->player;
 		$block = $this->block;
 		$type = $this->type;
 		
 		if($type == 1){
-			if(($level = $block->getLevel()) !== null){
-			if($level->getBlock($block->asVector3())->getId() == $block->getId()){
+			if(($level = $block->getWorld()) !== null){
+			if($level->getBlock($block->getPosition())->getId() == $block->getId()){
 				if($player instanceof Player){
 					//var_dump("Event Work\n");
 					$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
@@ -88,8 +88,8 @@ class PrepareTask extends Task {
 		}
 		
 		if($type == 2){
-			if(($level = $block->getLevel()) !== null){
-				if($level->getBlock($block->asVector3())->getId() !== $block->getId()){
+			if(($level = $block->getWorld()) !== null){
+				if($level->getBlock($block->getPosition())->getId() !== $block->getId()){
 					if($player instanceof Player){
 						//var_dump("Event Work\n");
 						$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);

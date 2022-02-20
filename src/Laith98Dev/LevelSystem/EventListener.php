@@ -35,18 +35,11 @@ namespace Laith98Dev\LevelSystem;
  * 	
  */
 
-use pocketmine\Player;
-use pocketmine\event\Listener;
+use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
-use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\event\player\PlayerDeathEvent;
-use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\entity\{EntityDamageEvent, EntityDamageByEntityEvent};
 
-class EventListener implements Listener 
+class DataManager 
 {
 	/** @var Main */
 	private $plugin;
@@ -59,119 +52,205 @@ class EventListener implements Listener
 		return $this->plugin;
 	}
 	
-	public function getDataFolder(){
-		return $this->plugin->getDataFolder();
-	}
-	
-	public function onJoin(PlayerJoinEvent $event){
-		$player = $event->getPlayer();
-		if($player instanceof Player){
-			$this->getPlugin()->getDataManager()->checkAccount($player);
-			// soon 
-			// $lvl = $this->getPlugin()->getDataManager()->getLevel($player);
-			// $player->setNameTag(str_replace("{lvl}", $lvl, $player->getNameTag()));
-		}
-	}
-	
-	public function onPlace(BlockPlaceEvent $event): void{
-		$player = $event->getPlayer();
-		$block = $event->getBlock();
-		if($event->isCancelled())
-			return;
+	public function getPlayers(){
+		$players = [];
 		
-		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 1), 1 * 20);
-	}
-	
-	public function onBreak(BlockBreakEvent $event): void{
-		$player = $event->getPlayer();
-		$block = $event->getBlock();
-		if($event->isCancelled())
-			return;
+		foreach (scandir($this->getPlugin()->getDataFolder() . "players") as $item){
+			if(in_array($item, [".", ".."]))
+				continue;
+			$players[] = str_replace(".yml", "", $item);
+		}
 		
-		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 2), 1 * 20);
+		return $players;
 	}
 	
-	public function onDeath(PlayerDeathEvent $event){
-		$player = $event->getPlayer();
+	public function checkAccount(Player $player){
+		if(!is_file($this->getPlugin()->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml")){
+			$cfg = new Config($this->getPlugin()->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml", Config::YAML, [
+				"Level" => 1,
+				"XP" => 0,
+				"addXP" => 0,
+				"nextLevelXP" => 0
+			]);
+			
+			// $add = (100 * $cfg->get("Level") * 5) / 2;
+			// $nextLevelXP = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 5);
+			
+			$add = (50 * $cfg->get("Level") / 2);
+			$nextLevelXP = ($add * $cfg->get("Level") * 100) / ($cfg->get("Level") * 4);
+			
+			$cfg->set("addXP", $add);
+			$cfg->set("nextLevelXP", $nextLevelXP);
+			$cfg->save();
+			
+			$this->getPlugin()->getLogger()->info("Creating new account for '" . strtolower($player->getName()) . "'");
+		}
+	}
+	
+	public function getPlayerData($player): ?Config{
 		if($player instanceof Player){
-			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
-			if($cfg->get("plugin-enable") === true){
-				if($cfg->get("add-xp-by-kill") === true){
-					if($cfg->get("kill-with-death-screen") === true){
-						//var_dump("death here hi \n");
-						if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
-							if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
-								$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
-							}
-						}
-					}
-				}
+			if(is_file($this->getPlugin()->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml")){
+				return new Config($this->getPlugin()->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml", Config::YAML);
+			}
+		} else {
+			if(is_file($this->getPlugin()->getDataFolder() . "players/" . strtolower($player) . ".yml")){
+				return new Config($this->getPlugin()->getDataFolder() . "players/" . strtolower($player) . ".yml", Config::YAML);
 			}
 		}
+		return null;
 	}
 	
-	public function onDamage(EntityDamageEvent $event){
-		$entity = $event->getEntity();
-		if($entity instanceof Player){
-			if($event instanceof EntityDamageByEntityEvent && ($damager = $event->getDamager()) instanceof Player){
-				$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
-				if($cfg->get("plugin-enable") === true){
-					if($cfg->get("add-xp-by-kill") === true){
-						if($cfg->get("kill-with-death-screen") === false){
-							if($entity->getHealth() <= $event->getFinalDamage()){
-								//var_dump("Finaly damage hi \n");
-								if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
-									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($damager))){
-										$damager->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($damager) . " XP");
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+	public function getAddXpCount($player): ?int{
+		if(($data = $this->getPlayerData($player)) !== null){
+			return $data->getAll()["addXP"];
 		}
+		
+		return null;
 	}
 	
-	public function onChat(PlayerChatEvent $event){
-		$player = $event->getPlayer();
-		$message = $event->getMessage();
-		if($player instanceof Player){
-			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
-			if($cfg->get("plugin-enable") === true){
-				if($cfg->get("add-xp-by-chat") === true){
-					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
-						if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
-							$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
-						}
-					}
-				}
-				
-				// chat format
-				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
-				if(!$event->isCancelled() && $cfg->get("edit-chat-format") === true){
-					if($this->getPlugin()->pureChat !== null){
-												
-						$levelName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getLevel()->getName() : null;
-						$chatFormat = $this->getPlugin()->pureChat->getChatFormat($player, $message, $levelName);
-						$chatFormat = str_replace("{lvl}", $lvl, $chatFormat);
-						//var_dump("Befor: " . $event->getFormat() . "\n");
-						//var_dump("1: " . $chatFormat . "\n");
-						//var_dump("2: " . $chatFormat . "\n");
-						
-						// idk but not work with setFormat()
-						//$event->setFormat($chatFormat); 
-						$event->setCancelled();
-						$this->getPlugin()->getServer()->broadcastMessage($chatFormat);
-					} else {
-						if($cfg->get("chatFormat") && $cfg->get("chatFormat") !== ""){
-							$chatFormat = str_replace(["{name}", "{lvl}", "{msg}", "&"], [$player->getName(), $lvl, $message, TF::ESCAPE], $cfg->get("chatFormat"));
-							//$event->setFormat($chatFormat);
-							$this->getPlugin()->getServer()->broadcastMessage($chatFormat);
-						}
-					}
+	public function getLevel($player): ?int{
+		if(($data = $this->getPlayerData($player)) !== null){
+			return $data->getAll()["Level"];
+		}
+		
+		return null;
+	}
+	
+	public function addLevel($player, int $add): bool{
+		if(($data = $this->getPlayerData($player)) !== null){
+			$level = $data->get("Level");
+			
+			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
+			if($level >= intval($cfg->get("MaxLevel")))
+				return false;
+			
+			$new = ($level + $add);
+			$data->set("Level", $new);
+			$data->save();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function setLevel($player, int $new): bool{
+		if(($data = $this->getPlayerData($player)) !== null){
+			
+			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
+			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
+				return false;
+			
+			$data->set("Level", $new);
+			$data->save();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function getXP($player): ?int{
+		if(($data = $this->getPlayerData($player)) !== null){
+			return $data->getAll()["XP"];
+		}
+		
+		return null;
+	}
+	
+	public function setXP($player, int $new): bool{
+		if(($data = $this->getPlayerData($player)) !== null){
+			$xp = $data->get("XP");
+			
+			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
+			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
+				return false;
+			
+			$data->set("XP", $new);
+			$data->save();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function addXP($player, int $add): bool{
+		//var_dump("add xp function <br>");
+		if(($data = $this->getPlayerData($player)) !== null){
+			//var_dump("data not null");
+			$xp = $data->get("XP");
+			
+			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
+			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
+				return false;
+			
+			$new = ($xp + $add);
+			$data->set("XP", $new);
+			$data->save();
+			
+			if($this->getXP($player) >= $this->getNextLevelXP($player)){
+				$this->prepareNewLevel($player, ($this->getLevel($player) + 1));
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function getNextLevelXP($player): ?int{
+		if(($data = $this->getPlayerData($player)) !== null){
+			return $data->getAll()["nextLevelXP"];
+		}
+		
+		return null;
+	}
+	
+	public function setNextLevelXP($player, int $new): bool{
+		if(($data = $this->getPlayerData($player)) !== null){
+			$data->set("nextLevelXP", $new);
+			$data->save();
+			return true;
+		}
+		
+		return false;
+	}
+		
+	public function prepareNewLevel($player, int $newLevel): bool{
+		if(($data = $this->getPlayerData($player)) !== null){
+			
+			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
+			if($newLevel > intval($cfg->get("MaxLevel")))
+				return false;
+			
+			//$add = (100 * $newLevel * 5) / 2;
+			//$add = (100 * $newLevel * 4) / 2;
+			//$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 5);
+			//$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 4);
+			
+			$add = (50 * $newLevel / 2);
+			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 4);
+			
+			if($player instanceof Player){
+				$player->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
+				$lvl = $this->getLevel($player);
+				$player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
+			} else {
+				$p = $this->getPlugin()->getServer()->getPlayerByPrefix($player);
+				if($p !== null){
+					// $lvl = $this->getLevel($player);
+					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
+					// $p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
+					$p->sendMessage(str_replace(["&", "{newLevel}", "{nextLevelXP}"], [TF::ESCAPE, $newLevel, $newNextLevel], $cfg->get("new-level-message")));
 				}
 			}
+			
+			$data->set("Level", $newLevel);
+			$data->set("addXP", $add);
+			$data->set("nextLevelXP", $newNextLevel);
+			$data->set("XP", 0);
+			$data->save();
+			return true;
 		}
+		
+		return false;
 	}
 }

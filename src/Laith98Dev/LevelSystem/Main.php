@@ -39,8 +39,9 @@ use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\block\Block;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
@@ -60,7 +61,7 @@ class Main extends PluginBase
 	/** @var Plugin|null */
 	public $pureChat;
 	
-	public function onEnable(){
+	public function onEnable(): void{
 		@mkdir($this->getDataFolder());
 		@mkdir($this->getDataFolder() . "players");
 		
@@ -74,7 +75,7 @@ class Main extends PluginBase
 				"add-xp-by-chat" => true,
 				"kill-with-death-screen" => true,
 				"edit-chat-format" => true,
-				"blocks-list" => [Block::STONE, Block::DIRT],// List of blocks that give XP
+				"blocks-list" => [BlockLegacyIds::STONE, BlockLegacyIds::DIRT],// List of blocks that give XP
 				"new-level-message" => "&eCongratulations, you have reached level {newLevel}",
 				"MaxLevel" => 100
 			]));
@@ -229,7 +230,7 @@ class Main extends PluginBase
 			$g = $cfg->get("edit-chat-format");
 			$h = $cfg->get("chatFormat");
 			$i = $cfg->get("new-level-message");
-			$j = $cfg->get("MaxLevel");
+			$j = intval($cfg->get("MaxLevel"));
 			
 			if($data[0] !== $a){
 				$cfg->set("plugin-enable", $data[0]);
@@ -277,7 +278,7 @@ class Main extends PluginBase
 			}
 			
 			if($data[9] !== $j){
-				$cfg->set("MaxLevel", $data[9]);
+				$cfg->set("MaxLevel", intval($data[9]));
 				$cfg->save();
 			}
 			
@@ -334,7 +335,7 @@ class Main extends PluginBase
 		
 		$form->addInput("New Level Message: ", "", $cfg->get("new-level-message", "&eCongratulations, you have reached level {newLevel}"));
 		
-		$form->addInput("Max Level: ", "", $cfg->get("MaxLevel", 100));
+		$form->addInput("Max Level: ", "", intval($cfg->get("MaxLevel", 100)));
 		
 		$form->sendToPlayer($player);
 		return $form;
