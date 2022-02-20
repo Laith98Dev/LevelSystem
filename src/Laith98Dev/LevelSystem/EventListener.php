@@ -35,7 +35,7 @@ namespace Laith98Dev\LevelSystem;
  * 	
  */
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\event\Listener;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
@@ -161,7 +161,7 @@ class EventListener implements Listener
 						
 						// idk but not work with setFormat()
 						//$event->setFormat($chatFormat); 
-						$event->setCancelled();
+						$event->cancel();
 						$this->getPlugin()->getServer()->broadcastMessage($chatFormat);
 					} else {
 						if($cfg->get("chatFormat") && $cfg->get("chatFormat") !== ""){
