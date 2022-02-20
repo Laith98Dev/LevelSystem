@@ -39,7 +39,7 @@ use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
-class DataManager 
+class DataMgr 
 {
 	/** @var Main */
 	private $plugin;
