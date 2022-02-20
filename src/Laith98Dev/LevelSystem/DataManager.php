@@ -35,7 +35,7 @@ namespace Laith98Dev\LevelSystem;
  * 	
  */
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
@@ -121,7 +121,7 @@ class DataManager
 			$level = $data->get("Level");
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($level >= $cfg->get("MaxLevel"))
+			if($level >= intval($cfg->get("MaxLevel")))
 				return false;
 			
 			$new = ($level + $add);
@@ -137,7 +137,7 @@ class DataManager
 		if(($data = $this->getPlayerData($player)) !== null){
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($data->get("Level") >= $cfg->get("MaxLevel"))
+			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
 				return false;
 			
 			$data->set("Level", $new);
@@ -161,7 +161,7 @@ class DataManager
 			$xp = $data->get("XP");
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($data->get("Level") >= $cfg->get("MaxLevel"))
+			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
 				return false;
 			
 			$data->set("XP", $new);
@@ -179,7 +179,7 @@ class DataManager
 			$xp = $data->get("XP");
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($data->get("Level") >= $cfg->get("MaxLevel"))
+			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
 				return false;
 			
 			$new = ($xp + $add);
@@ -218,7 +218,7 @@ class DataManager
 		if(($data = $this->getPlayerData($player)) !== null){
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($newLevel > $cfg->get("MaxLevel"))
+			if($newLevel > intval($cfg->get("MaxLevel")))
 				return false;
 			
 			//$add = (100 * $newLevel * 5) / 2;
@@ -234,7 +234,7 @@ class DataManager
 				$lvl = $this->getLevel($player);
 				$player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
 			} else {
-				$p = $this->getPlugin()->getServer()->getPlayer($player);
+				$p = $this->getPlugin()->getServer()->getPlayerByPrefix($player);
 				if($p !== null){
 					// $lvl = $this->getLevel($player);
 					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
