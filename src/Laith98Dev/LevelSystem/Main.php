@@ -83,7 +83,7 @@ class Main extends PluginBase
 		
 		$this->fixConfig();
 		
-		$this->dataManager = new DataManager($this);
+		$this->dataManager = new DataMgr($this);
 		
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		
@@ -106,7 +106,7 @@ class Main extends PluginBase
 			"add-xp-by-chat" => true,
 			"kill-with-death-screen" => true,
 			"edit-chat-format" => true,
-			"blocks-list" => [Block::STONE, Block::DIRT],// List of blocks that give XP
+			"blocks-list" => [BlockLegacyIds::STONE, BlockLegacyIds::DIRT],// List of blocks that give XP
 			"new-level-message" => "&eCongratulations, you have reached level {newLevel}",
 			"MaxLevel" => 100
 		];
