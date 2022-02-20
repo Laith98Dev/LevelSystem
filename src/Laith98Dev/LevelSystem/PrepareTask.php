@@ -68,7 +68,7 @@ class PrepareTask extends Task {
 		$type = $this->type;
 		
 		if($type == 1){
-			if(($level = $block->getWorld()) !== null){
+			if(($level = $block->getPosition()->getWorld()) !== null){
 			if($level->getBlock($block->getPosition())->getId() == $block->getId()){
 				if($player instanceof Player){
 					//var_dump("Event Work\n");
@@ -88,7 +88,7 @@ class PrepareTask extends Task {
 		}
 		
 		if($type == 2){
-			if(($level = $block->getWorld()) !== null){
+			if(($level = $block->getPosition()->getWorld()) !== null){
 				if($level->getBlock($block->getPosition())->getId() !== $block->getId()){
 					if($player instanceof Player){
 						//var_dump("Event Work\n");
