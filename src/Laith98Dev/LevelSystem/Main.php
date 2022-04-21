@@ -45,8 +45,8 @@ use pocketmine\utils\TextFormat as TF;
 
 use pocketmine\command\{Command, CommandSender};
 
-use Laith98Dev\LevelSystem\libs\FormAPI\jojoe77777\FormAPI\SimpleForm;
-use Laith98Dev\LevelSystem\libs\FormAPI\jojoe77777\FormAPI\CustomForm;
+use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\SimpleForm;
+use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\CustomForm;
 
 class Main extends PluginBase 
 {
