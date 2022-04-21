@@ -16,7 +16,7 @@ namespace Laith98Dev\LevelSystem;
  *  
  *	Youtube: Laith Youtuber
  *	Discord: Laith98Dev#0695
- *	Gihhub: Laith98Dev
+ *	Github: Laith98Dev
  *	Email: help@laithdev.tk
  *	Donate: https://paypal.me/Laith113
  *
@@ -48,11 +48,10 @@ use pocketmine\event\entity\{EntityDamageEvent, EntityDamageByEntityEvent};
 
 class EventListener implements Listener 
 {
-	/** @var Main */
-	private $plugin;
-	
-	public function __construct(Main $plugin){
-		$this->plugin = $plugin;
+	public function __construct(
+		private Main $plugin
+		){
+		// NOOP
 	}
 	
 	public function getPlugin(){
@@ -73,22 +72,56 @@ class EventListener implements Listener
 		}
 	}
 	
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onPlace(BlockPlaceEvent $event): void{
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
 		if($event->isCancelled())
 			return;
 		
-		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 1), 1 * 20);
+		// $this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 1), 1 * 20);
+
+		if($player instanceof Player){
+			var_dump("Event Work\n");
+			$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
+			if($cfg->get("plugin-enable") === true){
+				if($cfg->get("add-xp-by-build") === true && in_array($block->getId(), $cfg->get("blocks-list", []))){
+					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
+						if($this->plugin->getDataManager()->addXP($player, $this->plugin->getDataManager()->getAddXpCount($player))){
+							$player->sendPopup(TF::YELLOW . "+" . $this->plugin->getDataManager()->getAddXpCount($player) . " XP");
+						}
+					}
+				}
+			}
+		}
 	}
 	
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onBreak(BlockBreakEvent $event): void{
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
 		if($event->isCancelled())
 			return;
 		
-		$this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 2), 1 * 20);
+		// $this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 2), 1 * 20);
+
+		if($player instanceof Player){
+			var_dump("Event Work\n");
+			$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
+			if($cfg->get("plugin-enable") && $cfg->get("plugin-enable") === true){
+				if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true && in_array($block->getId(), $cfg->get("blocks-list", []))){
+					if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
+						if($this->plugin->getDataManager()->addXP($player, $this->plugin->getDataManager()->getAddXpCount($player))){
+							$player->sendPopup(TF::YELLOW . "+" . $this->plugin->getDataManager()->getAddXpCount($player) . " XP");
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public function onDeath(PlayerDeathEvent $event){
@@ -110,8 +143,15 @@ class EventListener implements Listener
 		}
 	}
 	
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onDamage(EntityDamageEvent $event){
 		$entity = $event->getEntity();
+
+		if($event->isCancelled())
+			return;
+		
 		if($entity instanceof Player){
 			if($event instanceof EntityDamageByEntityEvent && ($damager = $event->getDamager()) instanceof Player){
 				$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
@@ -133,9 +173,16 @@ class EventListener implements Listener
 		}
 	}
 	
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onChat(PlayerChatEvent $event){
 		$player = $event->getPlayer();
 		$message = $event->getMessage();
+
+		if($event->isCancelled())
+			return;
+
 		if($player instanceof Player){
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){

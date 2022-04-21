@@ -3,13 +3,14 @@ api: [4.0.0]
 main: Laith98Dev\LevelSystem\Main
 author: Laith98Dev
 website: https://github.com/Laith98Dev
-version: 1.0.0
+version: 1.0.1
+description: Advanced LevelSystem for PocketMine-MP
 
 commands:
   ls:
     description: LevelSystem Command
-    permission: ls.cmd.staff
+    permission: levelsystem.command.staff
+
 permissions:
-  ls.cmd.staff:
-    description: Allow player to use LevelSystem command
+  levelsystem.command.staff:
     default: op

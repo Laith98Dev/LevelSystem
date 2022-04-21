@@ -16,7 +16,7 @@ namespace Laith98Dev\LevelSystem;
  *  
  *	Youtube: Laith Youtuber
  *	Discord: Laith98Dev#0695
- *	Gihhub: Laith98Dev
+ *	Github: Laith98Dev
  *	Email: help@laithdev.tk
  *	Donate: https://paypal.me/Laith113
  *
@@ -37,19 +37,16 @@ namespace Laith98Dev\LevelSystem;
 
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
-use pocketmine\event\Listener;
 
 use pocketmine\player\Player;
-use pocketmine\block\Block;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
 use pocketmine\command\{Command, CommandSender};
 
-use jojoe77777\FormAPI\SimpleForm;
-use jojoe77777\FormAPI\CustomForm;
-use jojoe77777\FormAPI\ModalForm;
+use Laith98Dev\LevelSystem\libs\FormAPI\jojoe77777\FormAPI\SimpleForm;
+use Laith98Dev\LevelSystem\libs\FormAPI\jojoe77777\FormAPI\CustomForm;
 
 class Main extends PluginBase 
 {
@@ -57,6 +54,21 @@ class Main extends PluginBase
 	public $dataManager;
 	
 	public $saveSession = [];
+	public $defaultData = [
+		"plugin-enable" => true,
+		"chatFormat" => "&c[&e{lvl}&c] &r{name} &7> &r{msg}",
+		"add-xp-by-build" => true,
+		"add-xp-by-destroy" => true,
+		"add-xp-by-kill" => true,
+		"add-xp-by-chat" => true,
+		"kill-with-death-screen" => true,
+		"edit-chat-format" => true,
+		"blocks-list" => [BlockLegacyIds::STONE, BlockLegacyIds::DIRT],// List of blocks that give XP
+		"default-level-message" => "&eCongratulations, you have reached level {newLevel}",
+		"level.1.message" => "&eCongratulations {player}, you have reached level {newLevel}",
+		"level.2.message" => "&aCongratulations {player}, you have reached level {newLevel}",
+		"MaxLevel" => 100
+	];
 	
 	/** @var Plugin|null */
 	public $pureChat;
@@ -66,19 +78,7 @@ class Main extends PluginBase
 		@mkdir($this->getDataFolder() . "players");
 		
 		if(!is_file($this->getDataFolder() . "settings.yml")){
-			(new Config($this->getDataFolder() . "settings.yml", Config::YAML, [
-				"plugin-enable" => true,
-				"chatFormat" => "&c[&e{lvl}&c] &r{name} &7> &r{msg}",
-				"add-xp-by-build" => true,
-				"add-xp-by-destroy" => true,
-				"add-xp-by-kill" => true,
-				"add-xp-by-chat" => true,
-				"kill-with-death-screen" => true,
-				"edit-chat-format" => true,
-				"blocks-list" => [BlockLegacyIds::STONE, BlockLegacyIds::DIRT],// List of blocks that give XP
-				"new-level-message" => "&eCongratulations, you have reached level {newLevel}",
-				"MaxLevel" => 100
-			]));
+			(new Config($this->getDataFolder() . "settings.yml", Config::YAML, $this->defaultData));
 		}
 		
 		$this->fixConfig();
@@ -97,33 +97,22 @@ class Main extends PluginBase
 	public function fixConfig(){
 		$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
 		$all = $cfg->getAll();
-		$index = [
-			"plugin-enable" => true,
-			"chatFormat" => "&c[&e{lvl}&c] &r{name} &7> &r{msg}",
-			"add-xp-by-build" => true,
-			"add-xp-by-destroy" => true,
-			"add-xp-by-kill" => true,
-			"add-xp-by-chat" => true,
-			"kill-with-death-screen" => true,
-			"edit-chat-format" => true,
-			"blocks-list" => [BlockLegacyIds::STONE, BlockLegacyIds::DIRT],// List of blocks that give XP
-			"new-level-message" => "&eCongratulations, you have reached level {newLevel}",
-			"MaxLevel" => 100
-		];
+		$index = $this->defaultData;
 		
 		foreach ($index as $key => $value){
 			if(!isset($all[$key])){
-				$cfg->set($key, $value);
+				$this->getLogger()->info("You're using a old settings, it will update it for you!");
+				rename($this->getDataFolder() . "settings.yml", $this->getDataFolder() . "old_settings.yml");
+				(new Config($this->getDataFolder() . "settings.yml", Config::YAML, $index));
+				break;
 			}
 		}
-		
-		$cfg->save();
 	}
 	
 	public function onCommand(CommandSender $sender, Command $cmd, string $cmdLabel, array $args): bool{
 		if($cmd->getName() == "ls"){// LS
 			if($sender instanceof Player){
-				if($sender->hasPermission("ls.cmd.staff")){
+				if($sender->hasPermission("levelsystem.command.staff")){
 					$this->OpenMainForm($sender);
 				} else {
 					$this->OpenPlayerForm($sender, $sender->getName());

@@ -16,7 +16,7 @@ namespace Laith98Dev\LevelSystem;
  *  
  *	Youtube: Laith Youtuber
  *	Discord: Laith98Dev#0695
- *	Gihhub: Laith98Dev
+ *	Github: Laith98Dev
  *	Email: help@laithdev.tk
  *	Donate: https://paypal.me/Laith113
  *
@@ -41,11 +41,10 @@ use pocketmine\utils\TextFormat as TF;
 
 class DataMgr 
 {
-	/** @var Main */
-	private $plugin;
-	
-	public function __construct(Main $plugin){
-		$this->plugin = $plugin;
+	public function __construct(
+		private Main $plugin
+		){
+		// NOOP
 	}
 	
 	public function getPlugin(){
@@ -87,7 +86,7 @@ class DataMgr
 		}
 	}
 	
-	public function getPlayerData($player): ?Config{
+	public function getPlayerData(string|Player $player): ?Config{
 		if($player instanceof Player){
 			if(is_file($this->getPlugin()->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml")){
 				return new Config($this->getPlugin()->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml", Config::YAML);
@@ -100,7 +99,7 @@ class DataMgr
 		return null;
 	}
 	
-	public function getAddXpCount($player): ?int{
+	public function getAddXpCount(string|Player $player): ?int{
 		if(($data = $this->getPlayerData($player)) !== null){
 			return $data->getAll()["addXP"];
 		}
@@ -108,7 +107,7 @@ class DataMgr
 		return null;
 	}
 	
-	public function getLevel($player): ?int{
+	public function getLevel(string|Player $player): ?int{
 		if(($data = $this->getPlayerData($player)) !== null){
 			return $data->getAll()["Level"];
 		}
@@ -116,7 +115,7 @@ class DataMgr
 		return null;
 	}
 	
-	public function addLevel($player, int $add): bool{
+	public function addLevel(string|Player $player, int $add): bool{
 		if(($data = $this->getPlayerData($player)) !== null){
 			$level = $data->get("Level");
 			
@@ -124,8 +123,8 @@ class DataMgr
 			if($level >= intval($cfg->get("MaxLevel")))
 				return false;
 			
-			$new = ($level + $add);
-			$data->set("Level", $new);
+			$level += $add;
+			$data->set("Level", $level);
 			$data->save();
 			return true;
 		}
@@ -133,7 +132,7 @@ class DataMgr
 		return false;
 	}
 	
-	public function setLevel($player, int $new): bool{
+	public function setLevel(string|Player $player, int $new): bool{
 		if(($data = $this->getPlayerData($player)) !== null){
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
@@ -148,7 +147,7 @@ class DataMgr
 		return false;
 	}
 	
-	public function getXP($player): ?int{
+	public function getXP(string|Player $player): ?int{
 		if(($data = $this->getPlayerData($player)) !== null){
 			return $data->getAll()["XP"];
 		}
@@ -156,12 +155,12 @@ class DataMgr
 		return null;
 	}
 	
-	public function setXP($player, int $new): bool{
+	public function setXP(string|Player $player, int $new): bool{
 		if(($data = $this->getPlayerData($player)) !== null){
 			$xp = $data->get("XP");
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
+			if(intval($data->get("Level")) >= intval($cfg->get("MaxLevel")))
 				return false;
 			
 			$data->set("XP", $new);
@@ -172,18 +171,18 @@ class DataMgr
 		return false;
 	}
 	
-	public function addXP($player, int $add): bool{
+	public function addXP(string|Player $player, int $add): bool{
 		//var_dump("add xp function <br>");
 		if(($data = $this->getPlayerData($player)) !== null){
 			//var_dump("data not null");
 			$xp = $data->get("XP");
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
-			if($data->get("Level") >= intval($cfg->get("MaxLevel")))
+			if(intval($data->get("Level")) >= intval($cfg->get("MaxLevel")))
 				return false;
 			
-			$new = ($xp + $add);
-			$data->set("XP", $new);
+			$xp += $add;
+			$data->set("XP", $xp);
 			$data->save();
 			
 			if($this->getXP($player) >= $this->getNextLevelXP($player)){
@@ -196,7 +195,7 @@ class DataMgr
 		return false;
 	}
 	
-	public function getNextLevelXP($player): ?int{
+	public function getNextLevelXP(string|Player $player): ?int{
 		if(($data = $this->getPlayerData($player)) !== null){
 			return $data->getAll()["nextLevelXP"];
 		}
@@ -204,7 +203,7 @@ class DataMgr
 		return null;
 	}
 	
-	public function setNextLevelXP($player, int $new): bool{
+	public function setNextLevelXP(string|Player $player, int $new): bool{
 		if(($data = $this->getPlayerData($player)) !== null){
 			$data->set("nextLevelXP", $new);
 			$data->save();
@@ -214,7 +213,7 @@ class DataMgr
 		return false;
 	}
 		
-	public function prepareNewLevel($player, int $newLevel): bool{
+	public function prepareNewLevel(string|Player $player, int $newLevel): bool{
 		if(($data = $this->getPlayerData($player)) !== null){
 			
 			$cfg = new Config($this->getPlugin()->getDataFolder() . "settings.yml", Config::YAML);
@@ -230,16 +229,26 @@ class DataMgr
 			$newNextLevel = ($add * $newLevel * 100) / ($newLevel * 4);
 			
 			if($player instanceof Player){
-				$player->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
-				$lvl = $this->getLevel($player);
-				$player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
+				if(($msg = $cfg->get("level." . $newLevel . ".message"))){
+					$player->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($player), $player->getName(), TF::ESCAPE], $msg));
+				} else {
+					$player->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($p), $p, TF::ESCAPE], $cfg->get("default-level-message")));
+				}
+
+				// later...
+				// $lvl = $this->getLevel($player);
+				// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
 			} else {
 				$p = $this->getPlugin()->getServer()->getPlayerByPrefix($player);
 				if($p !== null){
+					if(($msg = $cfg->get("level." . $newLevel . ".message"))){
+						$p->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($player), $p, TF::ESCAPE], $msg));
+					} else {
+						$p->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($p), $p, TF::ESCAPE], $cfg->get("default-level-message")));
+					}
 					// $lvl = $this->getLevel($player);
 					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
-					// $p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel);
-					$p->sendMessage(str_replace(["&", "{newLevel}", "{nextLevelXP}"], [TF::ESCAPE, $newLevel, $newNextLevel], $cfg->get("new-level-message")));
+					// $p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel
 				}
 			}
 			
