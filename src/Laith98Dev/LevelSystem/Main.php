@@ -67,6 +67,8 @@ class Main extends PluginBase
 		"default-level-message" => "&eCongratulations, you have reached level {newLevel}",
 		"level.1.message" => "&eCongratulations {player}, you have reached level {newLevel}",
 		"level.2.message" => "&aCongratulations {player}, you have reached level {newLevel}",
+		"new.level.reward" => true,
+		"new.level.reward.commands" => ["give {player} golden_apple 5", "title {player} title &eNEW LEVEL!"],
 		"MaxLevel" => 100
 	];
 	
@@ -145,7 +147,6 @@ class Main extends PluginBase
 		$form->addButton("Players");
 		$form->addButton("Settings");
 		$form->sendToPlayer($player);
-		return $form;
 	}
 	
 	public function OpenPlayersForm(Player $player){
@@ -180,7 +181,6 @@ class Main extends PluginBase
 			$this->saveSession[$player->getName()] = ["players" => $players, "player" => null];
 		}
 		$form->sendToPlayer($player);
-		return $form;
 	}
 	
 	public function OpenPlayerForm(Player $player, string $player_){
@@ -201,7 +201,6 @@ class Main extends PluginBase
 		$form->setContent("\n - " . TF::YELLOW . "Level: " . TF::RESET . $this->getDataManager()->getLevel($player_) . TF::GREEN . " (" . $this->getDataManager()->getXP($player_) . TF::GRAY . "/" . TF::RESET . $this->getDataManager()->getNextLevelXP($player_) . TF::GREEN . ")");
 		$form->addButton($player->hasPermission("ls.cmd.staff") ? "Back" : "Exit");
 		$form->sendToPlayer($player);
-		return $form;
 	}
 	
 	public function OpenSettingsForm(Player $player){
@@ -220,6 +219,7 @@ class Main extends PluginBase
 			$h = $cfg->get("chatFormat");
 			$i = $cfg->get("new-level-message");
 			$j = intval($cfg->get("MaxLevel"));
+			$k = $cfg->get("new.level.reward");
 			
 			if($data[0] !== $a){
 				$cfg->set("plugin-enable", $data[0]);
@@ -261,13 +261,18 @@ class Main extends PluginBase
 				$cfg->save();
 			}
 			
-			if($data[8] !== $i){
-				$cfg->set("new-level-message", $data[8]);
+			if($data[8] !== $k){
+				$cfg->set("new.level.reward", $data[8]);
 				$cfg->save();
 			}
 			
-			if($data[9] !== $j){
-				$cfg->set("MaxLevel", intval($data[9]));
+			if($data[9] !== $i){
+				$cfg->set("new-level-message", $data[9]);
+				$cfg->save();
+			}
+			
+			if($data[10] !== $j){
+				$cfg->set("MaxLevel", intval($data[10]));
 				$cfg->save();
 			}
 			
@@ -320,6 +325,12 @@ class Main extends PluginBase
 			$form->addToggle("Edit Chat Format: ", false);
 		}
 		
+		if($cfg->get("new.level.reward") === true){
+			$form->addToggle("New Level reward: ", true);
+		} else {
+			$form->addToggle("New Level reward: ", false);
+		}
+		
 		$form->addInput("chat Format: ", "", $cfg->get("chatFormat", "&c[&e{lvl}&c] &r{name} &7> &r{msg}"));
 		
 		$form->addInput("New Level Message: ", "", $cfg->get("new-level-message", "&eCongratulations, you have reached level {newLevel}"));
@@ -327,6 +338,5 @@ class Main extends PluginBase
 		$form->addInput("Max Level: ", "", intval($cfg->get("MaxLevel", 100)));
 		
 		$form->sendToPlayer($player);
-		return $form;
 	}
 }
