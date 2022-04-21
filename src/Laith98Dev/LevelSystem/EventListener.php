@@ -196,7 +196,7 @@ class EventListener implements Listener
 				
 				// chat format
 				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
-				if(!$event->isCancelled() && $cfg->get("edit-chat-format") === true){
+				if($cfg->get("edit-chat-format") === true){
 					if($this->getPlugin()->pureChat !== null){
 												
 						$levelName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getFolderName() : null;

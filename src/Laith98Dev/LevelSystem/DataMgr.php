@@ -232,7 +232,7 @@ class DataMgr
 				if(($msg = $cfg->get("level." . $newLevel . ".message"))){
 					$player->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($player), $player->getName(), TF::ESCAPE], $msg));
 				} else {
-					$player->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($p), $p, TF::ESCAPE], $cfg->get("default-level-message")));
+					$player->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($player), $player->getName(), TF::ESCAPE], $cfg->get("default-level-message")));
 				}
 
 				// later...
