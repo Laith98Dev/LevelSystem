@@ -237,7 +237,7 @@ class DataMgr
 				}
 
 				if($cfg->get("new.level.reward") === true){
-					if(($$cmds = $cfg->get("new.level.reward.commands")) && is_array($cmds) && count($cmds) > 0){
+					if(($cmds = $cfg->get("new.level.reward.commands")) && is_array($cmds) && count($cmds) > 0){
 						foreach ($cmds as $cmd){
 							$this->plugin->getServer()->dispatchCommand(new ConsoleCommandSender($this->plugin->getServer(), $this->plugin->getServer()->getLanguage()), str_replace(["&", "{player}"], [TF::ESCAPE, '"' . $player->getName() . '"'], $cmd));
 						}
@@ -257,7 +257,7 @@ class DataMgr
 					}
 
 					if($cfg->get("new.level.reward") === true){
-						if(($$cmds = $cfg->get("new.level.reward.commands")) && is_array($cmds) && count($cmds) > 0){
+						if(($cmds = $cfg->get("new.level.reward.commands")) && is_array($cmds) && count($cmds) > 0){
 							foreach ($cmds as $cmd){
 								$this->plugin->getServer()->dispatchCommand(new ConsoleCommandSender($this->plugin->getServer(), $this->plugin->getServer()->getLanguage()), str_replace(["&", "{player}"], [TF::ESCAPE, '"' . $p . '"'], $cmd));
 							}
