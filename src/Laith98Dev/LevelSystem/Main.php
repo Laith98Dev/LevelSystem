@@ -48,8 +48,6 @@ use pocketmine\command\{Command, CommandSender};
 use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\SimpleForm;
 use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\CustomForm;
 
-use _64FF00\PurePerms\PurePerms;
-
 class Main extends PluginBase 
 {
 	/** @var DataMgr */
@@ -92,12 +90,6 @@ class Main extends PluginBase
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		
 		$this->pureChat = $this->getServer()->getPluginManager()->getPlugin("PureChat");
-		assert($this->pureChat !== null);
-		$purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-		if(!$purePerms instanceof PurePerms){
-			$this->getLogger()->error("PurePerms not found, please make sure you're installed PurePerms!");
-			$this->getServer()->getPluginManager()->disablePlugin($this);
-		}
 	}
 	
 	public function getDataManager(){

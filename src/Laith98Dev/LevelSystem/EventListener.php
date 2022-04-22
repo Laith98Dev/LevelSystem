@@ -141,7 +141,6 @@ class EventListener implements Listener
 			return;
 		
 		if($player instanceof Player){
-			var_dump("Event Work\n");
 			$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") && $cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-destroy") && $cfg->get("add-xp-by-destroy") === true && in_array($block->getId(), $cfg->get("blocks-list", []))){
@@ -235,11 +234,9 @@ class EventListener implements Listener
 				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
 				if($cfg->get("edit-chat-format") === true){
 					if($this->getPlugin()->pureChat !== null){
-												
 						$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
 						$chatFormat = $this->getPlugin()->pureChat->getChatFormat($player, $message, $WorldName);
 						$chatFormat = str_replace("{lvl}", $lvl, $chatFormat);
-						var_dump($chatFormat);
 						$event->setFormat($chatFormat); 
 					} 
 					/* else {
