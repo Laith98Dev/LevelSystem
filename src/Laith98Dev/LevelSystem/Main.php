@@ -233,7 +233,7 @@ class Main extends PluginBase
 			$e = $cfg->get("add-xp-by-chat");
 			$f = $cfg->get("kill-with-death-screen");
 			$g = $cfg->get("edit-chat-format");
-			$h = $cfg->get("chatFormat");
+			// $h = $cfg->get("chatFormat");
 			$i = $cfg->get("new-level-message");
 			$j = intval($cfg->get("MaxLevel"));
 			$k = $cfg->get("new.level.reward");
@@ -273,23 +273,18 @@ class Main extends PluginBase
 				$cfg->save();
 			}
 			
-			if($data[7] !== $h){
-				$cfg->set("chatFormat", $data[7]);
+			if($data[7] !== $k){
+				$cfg->set("new.level.reward", $data[7]);
 				$cfg->save();
 			}
 			
-			if($data[8] !== $k){
-				$cfg->set("new.level.reward", $data[8]);
+			if($data[8] !== $i){
+				$cfg->set("default-level-message", $data[8]);
 				$cfg->save();
 			}
 			
-			if($data[9] !== $i){
-				$cfg->set("new-level-message", $data[9]);
-				$cfg->save();
-			}
-			
-			if($data[10] !== $j){
-				$cfg->set("MaxLevel", intval($data[10]));
+			if($data[9] !== $j){
+				$cfg->set("MaxLevel", intval($data[9]));
 				$cfg->save();
 			}
 			
@@ -348,9 +343,9 @@ class Main extends PluginBase
 			$form->addToggle("New Level reward: ", false);
 		}
 		
-		$form->addInput("chat Format: ", "", $cfg->get("chatFormat", "&c[&e{lvl}&c] &r{name} &7> &r{msg}"));
+		// $form->addInput("chat Format: ", "", $cfg->get("chatFormat", "&c[&e{lvl}&c] &r{name} &7> &r{msg}"));
 		
-		$form->addInput("New Level Message: ", "", $cfg->get("new-level-message", "&eCongratulations, you have reached level {newLevel}"));
+		$form->addInput("Default Level Message: ", "", $cfg->get("new-level-message", "&eCongratulations, you have reached level {newLevel}"));
 		
 		$form->addInput("Max Level: ", "", intval($cfg->get("MaxLevel", 100)));
 		

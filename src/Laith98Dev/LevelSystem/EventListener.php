@@ -65,10 +65,10 @@ class EventListener implements Listener
 	}
 
 	/**
-	 * @param PPGroupChangedEvent $event
+	 * @param PPRankChangedEvent $event
 	 * @priority HIGHEST
 	 */
-	public function onGroupChanged(PPGroupChangedEvent $event)
+	public function onRankChanged(PPRankChangedEvent $event)
     {
         /** @var IPlayer $player */
         $player = $event->getPlayer();
@@ -114,10 +114,7 @@ class EventListener implements Listener
 		if($event->isCancelled())
 			return;
 		
-		// $this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 1), 1 * 20);
-
 		if($player instanceof Player){
-			var_dump("Event Work\n");
 			$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-build") === true && in_array($block->getId(), $cfg->get("blocks-list", []))){
@@ -142,8 +139,6 @@ class EventListener implements Listener
 		if($event->isCancelled())
 			return;
 		
-		// $this->plugin->getScheduler()->scheduleDelayedTask(new PrepareTask($this->plugin, $player, $block, 2), 1 * 20);
-
 		if($player instanceof Player){
 			var_dump("Event Work\n");
 			$cfg = new Config($this->plugin->getDataFolder() . "settings.yml", Config::YAML);
@@ -170,7 +165,6 @@ class EventListener implements Listener
 			if($cfg->get("plugin-enable") === true){
 				if($cfg->get("add-xp-by-kill") === true){
 					if($cfg->get("kill-with-death-screen") === true){
-						//var_dump("death here hi \n");
 						if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 							if($this->getPlugin()->getDataManager()->addXP($player, $this->getPlugin()->getDataManager()->getAddXpCount($player))){
 								$player->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($player) . " XP");
@@ -200,7 +194,6 @@ class EventListener implements Listener
 					if($cfg->get("add-xp-by-kill") === true){
 						if($cfg->get("kill-with-death-screen") === false){
 							if($entity->getHealth() <= $event->getFinalDamage()){
-								//var_dump("Finaly damage hi \n");
 								if(mt_rand(0, 200) < 120 && mt_rand(0, 1) == 1 && mt_rand(0, 1) == 0 && mt_rand(0, 3) == 2){// random
 									if($this->getPlugin()->getDataManager()->addXP($damager, $this->getPlugin()->getDataManager()->getAddXpCount($damager))){
 										$damager->sendPopup(TF::YELLOW . "+" . $this->getPlugin()->getDataManager()->getAddXpCount($damager) . " XP");
@@ -247,14 +240,15 @@ class EventListener implements Listener
 						$chatFormat = str_replace("{lvl}", $lvl, $chatFormat);
 						var_dump($chatFormat);
 						$event->setFormat($chatFormat); 
-					} else {
+					} 
+					/* else {
 						if($cfg->get("chatFormat") && $cfg->get("chatFormat") !== ""){
 							$chatFormat = str_replace(["{name}", "{lvl}", "{msg}", "&"], [$player->getName(), $lvl, $message, TF::ESCAPE], $cfg->get("chatFormat"));
 							//$event->setFormat($chatFormat);
 							$event->cancel();
 							$this->getPlugin()->getServer()->broadcastMessage($chatFormat);
 						}
-					}
+					} */
 				}
 			}
 		}
