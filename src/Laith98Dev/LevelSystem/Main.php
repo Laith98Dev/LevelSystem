@@ -64,9 +64,9 @@ class Main extends PluginBase
 		"kill-with-death-screen" => true,
 		"edit-chat-format" => true,
 		"blocks-list" => [BlockLegacyIds::STONE, BlockLegacyIds::DIRT],// List of blocks that give XP
-		"default-level-message" => "&eCongratulations, you have reached level {newLevel}",
-		"level.1.message" => "&eCongratulations {player}, you have reached level {newLevel}",
-		"level.2.message" => "&aCongratulations {player}, you have reached level {newLevel}",
+		"default-level-message" => "&eCongratulations, you have reached level {newLvl}",
+		"level.1.message" => "&eCongratulations {player}, you have reached level {newLvl}",
+		"level.2.message" => "&aCongratulations {player}, you have reached level {newLvl}",
 		"new.level.reward" => true,
 		"new.level.reward.commands" => ["give {player} golden_apple 5", "title {player} title &eNEW LEVEL!"],
 		"MaxLevel" => 100
