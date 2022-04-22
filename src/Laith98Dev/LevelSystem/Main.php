@@ -38,7 +38,6 @@ namespace Laith98Dev\LevelSystem;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
 
-use pocketmine\player\Player;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
@@ -47,6 +46,7 @@ use pocketmine\command\{Command, CommandSender};
 
 use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\SimpleForm;
 use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\CustomForm;
+use pocketmine\player\Player;
 
 class Main extends PluginBase 
 {
@@ -114,10 +114,19 @@ class Main extends PluginBase
 	public function onCommand(CommandSender $sender, Command $cmd, string $cmdLabel, array $args): bool{
 		if($cmd->getName() == "ls"){// LS
 			if($sender instanceof Player){
-				if($sender->hasPermission("levelsystem.command.staff")){
-					$this->OpenMainForm($sender);
+				if(!isset($args[0])){
+					if($sender->hasPermission("levelsystem.command.staff")){
+						$this->OpenMainForm($sender);
+					} else {
+						$this->OpenPlayerForm($sender, $sender->getName());
+					}
 				} else {
-					$this->OpenPlayerForm($sender, $sender->getName());
+					$name = strtolower($args[0]);
+					if(file_exists($this->getDataFolder() . "players/" . strtolower($name) . ".yml")){
+						$this->OpenPlayerForm($sender, $name);
+					} else {
+						$sender->sendMessage(TF::RED . "Player with name '" . $name . "' not exist!");
+					}
 				}
 			} else {
 				$sender->sendMessage("run command in-game only!");
