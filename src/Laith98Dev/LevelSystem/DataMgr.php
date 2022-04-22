@@ -35,6 +35,7 @@ namespace Laith98Dev\LevelSystem;
  * 	
  */
 
+use pocketmine\console\ConsoleCommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
@@ -235,6 +236,14 @@ class DataMgr
 					$player->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($player), $player->getName(), TF::ESCAPE], $cfg->get("default-level-message")));
 				}
 
+				if($cfg->get("new.level.reward") === true){
+					if(($$cmds = $cfg->get("new.level.reward.commands")) && is_array($cmds) && count($cmds) > 0){
+						foreach ($cmds as $cmd){
+							$this->plugin->getServer()->dispatchCommand(new ConsoleCommandSender($this->plugin->getServer(), $this->plugin->getServer()->getLanguage()), str_replace(["&", "{player}"], [TF::ESCAPE, '"' . $player->getName() . '"'], $cmd));
+						}
+					}
+				}
+
 				// later...
 				// $lvl = $this->getLevel($player);
 				// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
@@ -246,6 +255,15 @@ class DataMgr
 					} else {
 						$p->sendMessage(str_replace(["{newLvl}", "{oldLvl}", "{player}", "&"], [$newLevel, $this->getLevel($p), $p, TF::ESCAPE], $cfg->get("default-level-message")));
 					}
+
+					if($cfg->get("new.level.reward") === true){
+						if(($$cmds = $cfg->get("new.level.reward.commands")) && is_array($cmds) && count($cmds) > 0){
+							foreach ($cmds as $cmd){
+								$this->plugin->getServer()->dispatchCommand(new ConsoleCommandSender($this->plugin->getServer(), $this->plugin->getServer()->getLanguage()), str_replace(["&", "{player}"], [TF::ESCAPE, '"' . $p . '"'], $cmd));
+							}
+						}
+					}
+
 					// $lvl = $this->getLevel($player);
 					// $player->setNameTag(str_replace(["{lvl}", ($newLevel - 1)], [$lvl, $lvl], $player->getNameTag()));
 					// $p->sendMessage(TF::YELLOW . "Congratulations, you have reached level " . $newLevel
