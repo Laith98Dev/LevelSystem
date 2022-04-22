@@ -38,6 +38,7 @@ namespace Laith98Dev\LevelSystem;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
 
+use pocketmine\player\Player;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
@@ -46,7 +47,8 @@ use pocketmine\command\{Command, CommandSender};
 
 use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\SimpleForm;
 use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\CustomForm;
-use pocketmine\player\Player;
+
+use _64FF00\PurePerms\PurePerms;
 
 class Main extends PluginBase 
 {
@@ -90,6 +92,12 @@ class Main extends PluginBase
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		
 		$this->pureChat = $this->getServer()->getPluginManager()->getPlugin("PureChat");
+		assert($this->pureChat !== null);
+		$purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+		if(!$purePerms instanceof PurePerms){
+			$this->getLogger()->error("PurePerms not found, please make sure you're installed PurePerms!");
+			$this->getServer()->getPluginManager()->disablePlugin($this);
+		}
 	}
 	
 	public function getDataManager(){

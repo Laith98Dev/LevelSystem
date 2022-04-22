@@ -46,6 +46,8 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\{EntityDamageEvent, EntityDamageByEntityEvent};
 
+use _64FF00\PurePerms\EventManager\PPRankChangedEvent;
+
 class EventListener implements Listener 
 {
 	public function __construct(
@@ -61,17 +63,43 @@ class EventListener implements Listener
 	public function getDataFolder(){
 		return $this->plugin->getDataFolder();
 	}
+
+	/**
+	 * @param PPGroupChangedEvent $event
+	 * @priority HIGHEST
+	 */
+	public function onGroupChanged(PPGroupChangedEvent $event)
+    {
+        /** @var IPlayer $player */
+        $player = $event->getPlayer();
+		if($player instanceof Player){
+            if($this->getPlugin()->pureChat !== null){
+				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
+				$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
+				$nametag = $this->getPlugin()->pureChat->getNametag($player, $WorldName);
+				$nametag = str_replace("{lvl}", $lvl, $nametag);
+				$player->setNameTag($nametag);
+			}
+		}
+    }
 	
 	/**
 	 * @param PlayerJoinEvent $event
+	 * @priority HIGHEST
 	 */
-	public function onJoin(PlayerJoinEvent $event){
+	public function onJoin(PlayerJoinEvent $event)
+	{
 		$player = $event->getPlayer();
 		if($player instanceof Player){
 			$this->getPlugin()->getDataManager()->checkAccount($player);
-			// soon 
-			// $lvl = $this->getPlugin()->getDataManager()->getLevel($player);
-			// $player->setNameTag(str_replace("{lvl}", $lvl, $player->getNameTag()));
+
+			if($this->getPlugin()->pureChat !== null){
+				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
+				$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
+				$nametag = $this->getPlugin()->pureChat->getNametag($player, $WorldName);
+				$nametag = str_replace("{lvl}", $lvl, $nametag);
+				$player->setNameTag($nametag);
+			}
 		}
 	}
 	
@@ -79,7 +107,8 @@ class EventListener implements Listener
 	 * @param BlockPlaceEvent $event
 	 * @priority HIGHEST
 	 */
-	public function onPlace(BlockPlaceEvent $event): void{
+	public function onPlace(BlockPlaceEvent $event): void
+	{
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
 		if($event->isCancelled())
@@ -106,7 +135,8 @@ class EventListener implements Listener
 	 * @param BlockBreakEvent $event
 	 * @priority HIGHEST
 	 */
-	public function onBreak(BlockBreakEvent $event): void{
+	public function onBreak(BlockBreakEvent $event): void
+	{
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
 		if($event->isCancelled())
@@ -132,7 +162,8 @@ class EventListener implements Listener
 	/**
 	 * @param PlayerDeathEvent $event
 	 */
-	public function onDeath(PlayerDeathEvent $event){
+	public function onDeath(PlayerDeathEvent $event)
+	{
 		$player = $event->getPlayer();
 		if($player instanceof Player){
 			$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
@@ -155,7 +186,8 @@ class EventListener implements Listener
 	 * @param EntityDamageEvent $event
 	 * @priority HIGHEST
 	 */
-	public function onDamage(EntityDamageEvent $event){
+	public function onDamage(EntityDamageEvent $event)
+	{
 		$entity = $event->getEntity();
 
 		if($event->isCancelled())
@@ -186,7 +218,8 @@ class EventListener implements Listener
 	 * @param PlayerChatEvent $event
 	 * @priority HIGHEST
 	 */
-	public function onChat(PlayerChatEvent $event){
+	public function onChat(PlayerChatEvent $event)
+	{
 		$player = $event->getPlayer();
 		$message = $event->getMessage();
 
@@ -209,17 +242,11 @@ class EventListener implements Listener
 				if($cfg->get("edit-chat-format") === true){
 					if($this->getPlugin()->pureChat !== null){
 												
-						$levelName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getFolderName() : null;
-						$chatFormat = $this->getPlugin()->pureChat->getChatFormat($player, $message, $levelName);
+						$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
+						$chatFormat = $this->getPlugin()->pureChat->getChatFormat($player, $message, $WorldName);
 						$chatFormat = str_replace("{lvl}", $lvl, $chatFormat);
-						//var_dump("Befor: " . $event->getFormat() . "\n");
-						//var_dump("1: " . $chatFormat . "\n");
-						//var_dump("2: " . $chatFormat . "\n");
-						
-						// idk but not work with setFormat()
+						var_dump($chatFormat);
 						$event->setFormat($chatFormat); 
-						// $event->cancel();
-						// $this->getPlugin()->getServer()->broadcastMessage($chatFormat);
 					} else {
 						if($cfg->get("chatFormat") && $cfg->get("chatFormat") !== ""){
 							$chatFormat = str_replace(["{name}", "{lvl}", "{msg}", "&"], [$player->getName(), $lvl, $message, TF::ESCAPE], $cfg->get("chatFormat"));
