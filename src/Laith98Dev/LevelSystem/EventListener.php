@@ -35,6 +35,7 @@ namespace Laith98Dev\LevelSystem;
  * 	
  */
 
+use pocketmine\player\IPlayer;
 use pocketmine\player\Player;
 use pocketmine\event\Listener;
 use pocketmine\utils\Config;
