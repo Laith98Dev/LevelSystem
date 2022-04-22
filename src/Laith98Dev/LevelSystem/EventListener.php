@@ -62,6 +62,9 @@ class EventListener implements Listener
 		return $this->plugin->getDataFolder();
 	}
 	
+	/**
+	 * @param PlayerJoinEvent $event
+	 */
 	public function onJoin(PlayerJoinEvent $event){
 		$player = $event->getPlayer();
 		if($player instanceof Player){
@@ -73,6 +76,7 @@ class EventListener implements Listener
 	}
 	
 	/**
+	 * @param BlockPlaceEvent $event
 	 * @priority HIGHEST
 	 */
 	public function onPlace(BlockPlaceEvent $event): void{
@@ -99,6 +103,7 @@ class EventListener implements Listener
 	}
 	
 	/**
+	 * @param BlockBreakEvent $event
 	 * @priority HIGHEST
 	 */
 	public function onBreak(BlockBreakEvent $event): void{
@@ -124,6 +129,9 @@ class EventListener implements Listener
 		}
 	}
 	
+	/**
+	 * @param PlayerDeathEvent $event
+	 */
 	public function onDeath(PlayerDeathEvent $event){
 		$player = $event->getPlayer();
 		if($player instanceof Player){
@@ -144,6 +152,7 @@ class EventListener implements Listener
 	}
 	
 	/**
+	 * @param EntityDamageEvent $event
 	 * @priority HIGHEST
 	 */
 	public function onDamage(EntityDamageEvent $event){
@@ -174,6 +183,7 @@ class EventListener implements Listener
 	}
 	
 	/**
+	 * @param PlayerChatEvent $event
 	 * @priority HIGHEST
 	 */
 	public function onChat(PlayerChatEvent $event){
@@ -207,13 +217,14 @@ class EventListener implements Listener
 						//var_dump("2: " . $chatFormat . "\n");
 						
 						// idk but not work with setFormat()
-						//$event->setFormat($chatFormat); 
-						$event->cancel();
-						$this->getPlugin()->getServer()->broadcastMessage($chatFormat);
+						$event->setFormat($chatFormat); 
+						// $event->cancel();
+						// $this->getPlugin()->getServer()->broadcastMessage($chatFormat);
 					} else {
 						if($cfg->get("chatFormat") && $cfg->get("chatFormat") !== ""){
 							$chatFormat = str_replace(["{name}", "{lvl}", "{msg}", "&"], [$player->getName(), $lvl, $message, TF::ESCAPE], $cfg->get("chatFormat"));
 							//$event->setFormat($chatFormat);
+							$event->cancel();
 							$this->getPlugin()->getServer()->broadcastMessage($chatFormat);
 						}
 					}
