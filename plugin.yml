@@ -1,5 +1,5 @@
 name: LevelSystem
-api: [4.0.0]
+api: [2.0.0, 4.0.0]
 main: Laith98Dev\LevelSystem\Main
 author: Laith98Dev
 website: https://github.com/Laith98Dev
