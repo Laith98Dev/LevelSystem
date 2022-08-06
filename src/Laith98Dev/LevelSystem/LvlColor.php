@@ -33,8 +33,9 @@ class LvlColor {
 		if($level >= 200){
 			$result = TextFormat::AQUA.$level;
 		}
-    if($level >= 500){
-      $result = TextFormat::LIGHT_PURPLE.$level;
+                if($level >= 500){
+                        $result = TextFormat::LIGHT_PURPLE.$level;
+		}
 		if($level >= 1000){
 			$result = TextFormat::YELLOW.$level;
 		}
