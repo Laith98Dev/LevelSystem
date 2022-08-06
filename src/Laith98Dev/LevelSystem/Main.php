@@ -53,6 +53,9 @@ class Main extends PluginBase
 	/** @var DataMgr */
 	public $dataManager;
 	
+	/** @var */
+	public static $instance;	
+	
 	public $saveSession = [];
 	public $defaultData = [
 		"plugin-enable" => true,
@@ -76,6 +79,7 @@ class Main extends PluginBase
 	public $pureChat;
 	
 	public function onEnable(): void{
+		self::$instance = $this;
 		@mkdir($this->getDataFolder());
 		@mkdir($this->getDataFolder() . "players");
 		
@@ -95,6 +99,10 @@ class Main extends PluginBase
 	public function getDataManager(){
 		return $this->dataManager;
 	}
+	
+	public static function getInstance(): Main{
+            return self::$instance;
+	}	
 	
 	public function fixConfig(){
 		$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
