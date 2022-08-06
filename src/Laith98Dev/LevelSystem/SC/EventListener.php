@@ -8,7 +8,7 @@ use Ifera\ScoreHud\scoreboard\ScoreTag;
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
 
-class SCListener implements Listener {
+class EventListener implements Listener {
   
   /** @var Main */
 	private $plugin;
