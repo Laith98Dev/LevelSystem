@@ -48,7 +48,7 @@ use pocketmine\command\{Command, CommandSender};
 use Vecnavium\FormsUI\SimpleForm;
 use Vecnavium\FormsUI\CustomForm;
 
-use Laith98Dev\LevelSystem\SC\{SCListener, TagResloveListener};
+use Laith98Dev\LevelSystem\SC\{SCListener, TagResolveListener};
 
 class Main extends PluginBase 
 {
