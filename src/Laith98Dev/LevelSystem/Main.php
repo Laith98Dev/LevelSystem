@@ -48,7 +48,7 @@ use pocketmine\command\{Command, CommandSender};
 use Vecnavium\FormsUI\SimpleForm;
 use Vecnavium\FormsUI\CustomForm;
 
-use Laith98Dev\LevelSystem\SC\{SCListener, TagResolveListener};
+use Laith98Dev\LevelSystem\SC\{EventListener as iEventListener, TagResolveListener};
 
 class Main extends PluginBase 
 {
@@ -94,7 +94,7 @@ class Main extends PluginBase
 		$this->dataManager = new DataMgr($this);
 		
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-		$this->getServer()->getPluginManager()->registerEvents(new SCListener($this), $this);
+		$this->getServer()->getPluginManager()->registerEvents(new iEventListener($this), $this);
                 $this->getServer()->getPluginManager()->registerEvents(new TagResolveListener($this), $this);
 		
 		$this->pureChat = $this->getServer()->getPluginManager()->getPlugin("PureChat");
