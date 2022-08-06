@@ -53,7 +53,7 @@ class Main extends PluginBase
 	/** @var DataMgr */
 	public $dataManager;
 	
-	/** @var */
+	/** @var Main */
 	public static $instance;	
 	
 	public $saveSession = [];
