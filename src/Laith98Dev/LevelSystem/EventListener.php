@@ -75,7 +75,7 @@ class EventListener implements Listener
         $player = $event->getPlayer();
 		if($player instanceof Player){
             if($this->getPlugin()->pureChat !== null){
-				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
+				$lvl = LvlColor::getColorLevel($player);
 				$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
 				$nametag = $this->getPlugin()->pureChat->getNametag($player, $WorldName);
 				$nametag = str_replace("{lvl}", $lvl, $nametag);
@@ -95,7 +95,7 @@ class EventListener implements Listener
 			$this->getPlugin()->getDataManager()->checkAccount($player);
 
 			if($this->getPlugin()->pureChat !== null){
-				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
+				$lvl = LvlColor::getColorLevel($player);
 				$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
 				$nametag = $this->getPlugin()->pureChat->getNametag($player, $WorldName);
 				$nametag = str_replace("{lvl}", $lvl, $nametag);
@@ -231,7 +231,7 @@ class EventListener implements Listener
 				}
 				
 				// chat format
-				$lvl = $this->getPlugin()->getDataManager()->getLevel($player);
+				$lvl = LvlColor::getColorLevel($player);
 				if($cfg->get("edit-chat-format") === true){
 					if($this->getPlugin()->pureChat !== null){
 						$WorldName = $this->getPlugin()->pureChat->getConfig()->get("enable-multiworld-chat") ? $player->getWorld()->getDisplayName() : null;
