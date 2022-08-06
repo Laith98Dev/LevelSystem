@@ -20,7 +20,7 @@ class SCListener implements Listener {
   public function onLevelChange(Player $player){ // not a real event
 		$player = $this->plugin->getServer()->getPlayerByPrefix($username);
 		if($player instanceof Player && $player->isOnline()){
-			(new PlayerTagUpdateEvent($player, new ScoreTag("player.levelsystem", (string) $this->plugin->getDataManager()->getLevel())));
+			(new PlayerTagUpdateEvent($player, new ScoreTag("levelsystem.lvl", (string) $this->plugin->getDataManager()->getLevel())));
 		}
   }
 }
