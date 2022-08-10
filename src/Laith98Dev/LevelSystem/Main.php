@@ -45,13 +45,16 @@ use pocketmine\utils\TextFormat as TF;
 
 use pocketmine\command\{Command, CommandSender};
 
-use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\SimpleForm;
-use Laith98Dev\LevelSystem\libs\jojoe77777\FormAPI\CustomForm;
+use Vecnavium\FormsUI\SimpleForm;
+use Vecnavium\FormsUI\CustomForm;
 
 class Main extends PluginBase 
 {
 	/** @var DataMgr */
 	public $dataManager;
+	
+	/** @var Main */
+	public static $instance;	
 	
 	public $saveSession = [];
 	public $defaultData = [
@@ -76,6 +79,7 @@ class Main extends PluginBase
 	public $pureChat;
 	
 	public function onEnable(): void{
+		self::$instance = $this;
 		@mkdir($this->getDataFolder());
 		@mkdir($this->getDataFolder() . "players");
 		
@@ -95,6 +99,10 @@ class Main extends PluginBase
 	public function getDataManager(){
 		return $this->dataManager;
 	}
+	
+	public static function getInstance(): Main{
+            return self::$instance;
+	}	
 	
 	public function fixConfig(){
 		$cfg = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
